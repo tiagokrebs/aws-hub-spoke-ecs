@@ -201,6 +201,80 @@ Deletes:
 
 **Cannot reach ALB:** Verify security group allows port 80/443 from VPC CIDR (10.0.0.0/16). Run setup_shared_infra.sh again to re-add rules.
 
+## Terraform Deployment
+
+Alternative deployment using Terraform. Creates the same infrastructure as the bash scripts.
+
+### Prerequisites
+
+- Terraform (`brew install terraform`)
+- AWS CLI with `hub-me` profile configured
+- Docker running locally
+- `SpokeExecutionRole` in spoke account with broad permissions (IAM, EC2, ECS, ECR, ELB, Lambda, CloudWatch, S3)
+
+### Quick Start
+
+```bash
+# 1. Create S3 bucket for Terraform state (one-time, hub account)
+aws s3 mb s3://hub-spoke-ecs-terraform-state --region us-west-2 --profile hub-me
+
+# 2. Init and apply
+cd terraform/
+terraform init
+terraform plan
+terraform apply
+
+# 3. Test from spoke account
+./invoke_from_spoke.sh
+
+# 4. Test from hub account (assumes SpokeExecutionRole)
+./invoke_from_hub.sh
+
+# 5. Destroy everything
+terraform destroy
+```
+
+### Configuration
+
+Edit `terraform/terraform.tfvars`:
+
+```hcl
+hub_account_id   = "294493538673"
+spoke_account_id = "445876755019"
+hub_profile      = "hub-me"
+region           = "us-west-2"
+app_name         = "fastapi-app"
+app_version      = "v1"
+```
+
+### How It Works
+
+- **Default provider** assumes `SpokeExecutionRole` in the spoke account — creates VPC, ECS, ALB, ECR, Lambda, and spoke IAM roles
+- **Hub provider** uses `hub-me` profile directly — creates only `HubECSRole`
+- **S3 backend** stores state in the hub account
+- **Docker build/push** runs locally via `null_resource`, triggered when `app_version` changes
+- **Lambda source** lives in `terraform/lambda/ecs_caller.py`, zipped automatically by Terraform
+
+### File Structure
+
+```
+terraform/
+├── main.tf              # Providers, backend, locals
+├── variables.tf         # Input variables
+├── terraform.tfvars     # Variable values
+├── iam.tf               # IAM roles (hub + spoke)
+├── network.tf           # VPC, subnets, security group, VPC endpoints
+├── ecr.tf               # ECR repo + Docker build/push
+├── alb.tf               # Internal ALB, listener, target group, routing rule
+├── ecs.tf               # ECS cluster, task definition, service
+├── lambda.tf            # Lambda role + function
+├── outputs.tf           # ALB DNS, Lambda name, invoke command
+├── invoke_from_spoke.sh # Test Lambda using spoke profile
+├── invoke_from_hub.sh   # Test Lambda assuming role from hub
+└── lambda/
+    └── ecs_caller.py    # Lambda source code
+```
+
 ## Next Steps
 
 - Deploy multiple apps with different names

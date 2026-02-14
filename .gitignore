@@ -11,6 +11,13 @@ uv.lock
 *-task-execution-trust.json
 /tmp/
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+terraform/.terraform.lock.hcl
+terraform/lambda/ecs_caller.zip
+
 # macOS
 .DS_Store
 
