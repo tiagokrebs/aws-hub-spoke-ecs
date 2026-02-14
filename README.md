@@ -62,8 +62,8 @@ Hub Account (hub-me)
 Edit `.env`:
 
 ```bash
-HUB_ACCOUNT_ID=294493538673        # Your hub account
-SPOKE_ACCOUNT_ID=445876755019      # Your spoke account
+HUB_ACCOUNT_ID=123456789012        # Your hub account ID
+SPOKE_ACCOUNT_ID=210987654321      # Your spoke account ID
 HUB_PROFILE=hub-me                 # Hub AWS CLI profile
 SPOKE_ROLE_NAME=SpokeECSRole       # Will be created in spoke
 
