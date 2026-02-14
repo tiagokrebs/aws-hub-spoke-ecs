@@ -1,0 +1,116 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="28.0.6">
+  <diagram id="arch" name="Hub-Spoke ECS Architecture">
+    <mxGraphModel dx="1406" dy="630" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hub" value="&lt;b&gt;Hub Account&lt;/b&gt;&lt;br&gt;(294493538673)" style="rounded=1;whiteSpace=wrap;html=1;container=0;collapsible=0;fillColor=#F5F5F5;strokeColor=#9E9E9E;verticalAlign=top;fontSize=12;strokeWidth=2;dashed=1;dashPattern=8 4;arcSize=7;" parent="1" vertex="1">
+          <mxGeometry x="20" y="80" width="240" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="spoke" value="&lt;b&gt;Spoke Account&lt;/b&gt;&lt;br&gt;(445876755019)" style="rounded=1;whiteSpace=wrap;html=1;container=0;collapsible=0;fillColor=#F5F5F5;strokeColor=#9E9E9E;verticalAlign=top;fontSize=12;strokeWidth=2;dashed=1;dashPattern=8 4;arcSize=2;" parent="1" vertex="1">
+          <mxGeometry x="330" y="80" width="1060" height="710" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="sts:AssumeRole" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E65100;fontColor=#E65100;fontSize=10;strokeWidth=2;dashed=1;dashPattern=5 3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="hub_role" target="spoke_role" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="image pull" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7B1FA2;fontColor=#7B1FA2;fontSize=9;strokeWidth=1;dashed=1;dashPattern=3 3;" parent="1" source="vpce" target="ecr" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="570" />
+              <mxPoint x="480" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="ECR layers" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7B1FA2;fontColor=#7B1FA2;fontSize=9;strokeWidth=1;dashed=1;dashPattern=3 3;" parent="1" source="vpce" target="s3" edge="1">
+          <mxGeometry x="0.0022" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="570" />
+              <mxPoint x="990" y="570" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vpc" value="&lt;b&gt;VPC&lt;/b&gt; hub-spoke-vpc (10.0.0.0/16)" style="rounded=1;whiteSpace=wrap;html=1;container=0;collapsible=0;fillColor=#E3F2FD;strokeColor=#1565C0;verticalAlign=top;fontSize=11;strokeWidth=2;dashed=1;dashPattern=5 3;arcSize=4;" parent="1" vertex="1">
+          <mxGeometry x="350" y="130" width="1020" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ecr" value="&lt;b&gt;ECR&lt;/b&gt;&lt;br&gt;Repository: apps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="390" y="590" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cw" value="&lt;b&gt;CloudWatch Logs&lt;/b&gt;&lt;br&gt;/ecs/fastapi-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="610" y="610" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="&lt;b&gt;S3&lt;/b&gt;&lt;br&gt;ECR image layers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="890" y="590" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="iam_group" value="&lt;b&gt;IAM Roles (Spoke)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#FFF3E0;strokeColor=#E65100;verticalAlign=top;fontSize=11;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="680" width="1010" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="spoke_role" value="&lt;b&gt;SpokeECSRole&lt;/b&gt;&lt;br&gt;trusts HubECSRole" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;" parent="iam_group" vertex="1">
+          <mxGeometry x="15" y="32" width="210" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="exec_role" value="&lt;b&gt;ecsTaskExecutionRole&lt;/b&gt;&lt;br&gt;ECS task pull + logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;" parent="iam_group" vertex="1">
+          <mxGeometry x="245" y="32" width="230" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="task_role" value="&lt;b&gt;ecsTaskRole&lt;/b&gt;&lt;br&gt;ECS task runtime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;" parent="iam_group" vertex="1">
+          <mxGeometry x="495" y="32" width="200" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda_role" value="&lt;b&gt;ecs-caller-lambda-role&lt;/b&gt;&lt;br&gt;VPC access execution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;" parent="iam_group" vertex="1">
+          <mxGeometry x="715" y="32" width="275" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sub1" value="&lt;b&gt;Private Subnet 1&lt;/b&gt;&lt;br&gt;10.0.1.0/24 (us-west-2a)" style="rounded=1;whiteSpace=wrap;html=1;container=0;collapsible=0;fillColor=#E8F5E9;strokeColor=#2E7D32;verticalAlign=top;fontSize=10;strokeWidth=1;arcSize=4;" parent="1" vertex="1">
+          <mxGeometry x="370" y="165" width="480" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="sub2" value="&lt;b&gt;Private Subnet 2&lt;/b&gt;&lt;br&gt;10.0.2.0/24 (us-west-2b)" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#E8F5E9;strokeColor=#2E7D32;verticalAlign=top;fontSize=10;strokeWidth=1;arcSize=3;" parent="1" vertex="1">
+          <mxGeometry x="870" y="165" width="480" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda" value="&lt;b&gt;Lambda&lt;/b&gt; ecs-caller&lt;br&gt;python3.11 | timeout 30s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=10;" parent="sub2" vertex="1">
+          <mxGeometry x="130" y="125.00052631578947" width="200" height="39.80263157894737" as="geometry" />
+        </mxCell>
+        <mxCell id="alb" value="&lt;b&gt;Internal ALB&lt;/b&gt; hub-spoke-alb&lt;br&gt;HTTP:80 → default 503 | /fastapi-app/* → tg-fastapi-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="520" y="205" width="660" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sg_note" value="&lt;i&gt;Security Group: hub-spoke-shared-sg — ingress TCP 80, 443 from 10.0.0.0/16 — applies to ALB, ECS tasks, Lambda, VPC endpoints&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="450" y="450" width="820" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="vpce" value="&lt;b&gt;VPC Endpoints&lt;/b&gt;   ecr.api (Interface) | ecr.dkr (Interface) | logs (Interface) | s3 (Gateway)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="370" y="475" width="980" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="forward via tg-fastapi-app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;fontColor=#6A1B9A;fontSize=10;strokeWidth=2;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.363;exitY=0.974;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="alb" target="ecs_task" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="270" />
+              <mxPoint x="485" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="HTTP /fastapi-app/" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=10;strokeWidth=2;entryX=0.669;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="lambda" target="alb" edge="1">
+          <mxGeometry x="0.0014" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1110" y="270" />
+              <mxPoint x="962" y="270" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ecs_cluster" value="&lt;b&gt;ECS Cluster&lt;/b&gt; hub-spoke-cluster&lt;br&gt;FARGATE + FARGATE_SPOT" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#FFFDE7;strokeColor=#F9A825;verticalAlign=top;fontSize=10;dashed=1;dashPattern=4 4;arcSize=12;" parent="1" vertex="1">
+          <mxGeometry x="400" y="290" width="420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ecs_task" value="&lt;b&gt;ECS Fargate Service&lt;/b&gt;&lt;br&gt;fastapi-app (256 CPU / 512 MEM)&lt;br&gt;Image: apps:fastapi-app-v1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=10;" parent="ecs_cluster" vertex="1">
+          <mxGeometry x="20" y="40" width="260" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="hub_role" value="&lt;b&gt;HubECSRole&lt;/b&gt;&lt;br&gt;IAM Role" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="60" y="130" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="push logs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7B1FA2;fontColor=#7B1FA2;fontSize=9;strokeWidth=1;dashed=1;dashPattern=3 3;" parent="1" source="vpce" target="cw" edge="1">
+          <mxGeometry x="0.2195" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="590" />
+              <mxPoint x="740" y="590" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
