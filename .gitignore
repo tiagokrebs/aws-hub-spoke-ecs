@@ -1,0 +1,21 @@
+.env
+.venv
+__pycache__/
+*.pyc
+uv.lock
+
+# Temporary files created by scripts (should be cleaned up, but just in case)
+*-ecs-trust.json
+*-assume-spoke.json
+*-ecs-policy.json
+*-task-execution-trust.json
+/tmp/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
