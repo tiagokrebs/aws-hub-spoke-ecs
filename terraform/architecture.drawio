@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="28.0.6">
   <diagram id="arch" name="Hub-Spoke ECS Architecture">
-    <mxGraphModel dx="1406" dy="630" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="801" dy="359" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -66,31 +66,23 @@
         <mxCell id="lambda" value="&lt;b&gt;Lambda&lt;/b&gt; ecs-caller&lt;br&gt;python3.11 | timeout 30s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=10;" parent="sub2" vertex="1">
           <mxGeometry x="130" y="125.00052631578947" width="200" height="39.80263157894737" as="geometry" />
         </mxCell>
-        <mxCell id="alb" value="&lt;b&gt;Internal ALB&lt;/b&gt; hub-spoke-alb&lt;br&gt;HTTP:80 → default 503 | /fastapi-app/* → tg-fastapi-app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;fontSize=10;" parent="1" vertex="1">
-          <mxGeometry x="520" y="205" width="660" height="50" as="geometry" />
+        <mxCell id="alb" value="&lt;b&gt;Internal ALB&lt;/b&gt; hub-spoke-alb&lt;br&gt;HTTP:80 → default 503 | /fastapi-app/* → tg-fastapi-app&lt;div&gt;Requires two availability zones&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;fontSize=10;" parent="sub2" vertex="1">
+          <mxGeometry x="-350" y="35" width="660" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="HTTP /fastapi-app/" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=10;strokeWidth=2;entryX=0.669;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;" parent="sub2" source="lambda" target="alb" edge="1">
+          <mxGeometry x="0.0014" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="105" />
+              <mxPoint x="92" y="105" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="sg_note" value="&lt;i&gt;Security Group: hub-spoke-shared-sg — ingress TCP 80, 443 from 10.0.0.0/16 — applies to ALB, ECS tasks, Lambda, VPC endpoints&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" parent="1" vertex="1">
           <mxGeometry x="450" y="450" width="820" height="25" as="geometry" />
         </mxCell>
         <mxCell id="vpce" value="&lt;b&gt;VPC Endpoints&lt;/b&gt;   ecr.api (Interface) | ecr.dkr (Interface) | logs (Interface) | s3 (Gateway)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=10;" parent="1" vertex="1">
           <mxGeometry x="370" y="475" width="980" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="e3" value="forward via tg-fastapi-app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;fontColor=#6A1B9A;fontSize=10;strokeWidth=2;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.363;exitY=0.974;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="alb" target="ecs_task" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="760" y="270" />
-              <mxPoint x="485" y="270" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e2" value="HTTP /fastapi-app/" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=10;strokeWidth=2;entryX=0.669;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="lambda" target="alb" edge="1">
-          <mxGeometry x="0.0014" relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1110" y="270" />
-              <mxPoint x="962" y="270" />
-            </Array>
-            <mxPoint as="offset" />
-          </mxGeometry>
         </mxCell>
         <mxCell id="ecs_cluster" value="&lt;b&gt;ECS Cluster&lt;/b&gt; hub-spoke-cluster&lt;br&gt;FARGATE + FARGATE_SPOT" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#FFFDE7;strokeColor=#F9A825;verticalAlign=top;fontSize=10;dashed=1;dashPattern=4 4;arcSize=12;" parent="1" vertex="1">
           <mxGeometry x="400" y="290" width="420" height="130" as="geometry" />
@@ -108,6 +100,16 @@
               <mxPoint x="740" y="590" />
             </Array>
             <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="forward via tg-fastapi-app" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6A1B9A;fontColor=#6A1B9A;fontSize=10;strokeWidth=2;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" target="ecs_task" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="760" y="256" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="760" y="256" />
+              <mxPoint x="760" y="270" />
+              <mxPoint x="485" y="270" />
+            </Array>
           </mxGeometry>
         </mxCell>
       </root>
