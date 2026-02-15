@@ -1,0 +1,5 @@
+spoke_account_id = "445876755019"
+hub_profile      = "hub-me"
+region           = "us-west-2"
+app_name         = "fastapi-app"
+app_version      = "v1"
